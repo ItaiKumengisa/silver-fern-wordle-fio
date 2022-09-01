@@ -20,19 +20,19 @@ body {
 
 #header-end {
     display: flex;
-    /* justify-content: end; */
 }
 
 #game {
+    width: 500px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
 }
 
 .tile {
     height: 50px;
     width: 50px;
-    border: 2px solid white;
+    border: 2px solid grey;
 }
 
 #board {
@@ -46,6 +46,27 @@ body {
     display: flex;
     justify-content: center;
     /* border: 2px solid green; */
+}
+
+#keyboard {
+    margin: 10px
+}
+
+.keyboard-row {
+    display: flex;
+    width: 100%;
+    gap: 2px;
+}
+
+.keyboard-btn {
+    height: 55px;
+    flex: 1;
+    border-radius: 6px;
+    background-color: grey;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 1.5rem;  
+    color: inherit;
 }
 
 :root {

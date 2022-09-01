@@ -2,6 +2,8 @@ let numLetters = 5;
 
 drawBoard();
 
+
+
 function drawBoard(){
     for(let row = 0; row < 6; row++){
         for(let col = 0; col < numLetters; col++){
@@ -10,6 +12,8 @@ function drawBoard(){
         }          
     }
 }
+
+
 
 
 //Add square
@@ -27,6 +31,9 @@ function addTile(){
 
     board.appendChild(tile);
 }
+
+
+
 
 
 
