@@ -11,6 +11,7 @@ body {
     justify-content: space-between;
     min-height: 40px;
     border-bottom: 2px solid grey;
+    font-size: 2rem;
 }
 
 #header-start {
@@ -20,4 +21,33 @@ body {
 #header-end {
     display: flex;
     /* justify-content: end; */
+}
+
+#game {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.tile {
+    height: 50px;
+    width: 50px;
+    border: 2px solid white;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(var(--num-o-letters), auto);
+    grid-template-rows: repeat(6,auto);
+    grid-gap: 4px;
+}
+
+#board-container {
+    display: flex;
+    justify-content: center;
+    /* border: 2px solid green; */
+}
+
+:root {
+    --num-o-letters: 5;
 }
