@@ -9,12 +9,6 @@ const game = {
     solution: words[Math.floor(Math.random() * words.length)]
 }
 
-drawBoard();
-
-mapBoardStateToGrid();
-
-registerInputEvents();
-
 console.log(game)
 
 function drawBoard(){
@@ -27,9 +21,6 @@ function drawBoard(){
         }          
     }
 }
-
-
-
 
 //Add square
 function addTile(board, row, col, letter=''){
@@ -49,31 +40,11 @@ function addTile(board, row, col, letter=''){
     board.appendChild(tile);
 }
 
-function registerInputEvents(){
-    //Add event listeners to keyboard buttons
-
-    //get all keyboard buttons
-    const keys = document.querySelectorAll('.keyboard-btn');
-
-    //add event handlers to keys onClick event
-    keys.forEach(key => {
-        key.onclick = ({target}) => {
-            const val = target.dataset.key;
-            console.log(val)
-            
-            checkInput(val);
-        }
-    })
-
-    //handle keyboard input
-    
-}
-
 function getRowWord(){
     game.boardState[game.rowIndex].reduce((word, letter) => word + letter)
 }
 
-function checkInput(letter){
+function handleInput(letter){
     if(letter === 'Enter'){
         if(game.colIndex === numLetters){
             const word = getRowWord()
@@ -93,6 +64,27 @@ function checkInput(letter){
             addLetter(letter)
         }
     }
+}
+
+function registerInputEvents(){
+    //Add event listeners to keyboard buttons
+
+    //get all keyboard buttons
+    const keys = document.querySelectorAll('.keyboard-btn');
+
+    //add event handlers to keys onClick event
+    keys.forEach(key => {
+        key.onclick = ({target}) => {
+            const val = target.dataset.key;            
+            handleInput(val);
+        };
+    })
+
+    //handle keyboard input
+    document.body.onkeydown = (e) => {
+        const val = e.key;
+        handleInput(val);
+    };
 }
 
 function addLetter(letter){
@@ -127,6 +119,12 @@ function mapBoardStateToGrid(){
         }
     }
 }
+
+drawBoard();
+
+mapBoardStateToGrid();
+
+registerInputEvents();
 
 
 
