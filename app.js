@@ -1,8 +1,17 @@
 let numLetters = 5;
 
+const words = ['sauce', 'jeans', 'beans', 'horse', 'month']
+
+const state = {
+    boardState: Array(6).fill().map(() => Array(numLetters).fill('')),
+    currentRow: 0,
+    currentCol: 0,
+    solution: words[Math.floor(Math.random() * words.length)]
+}
+
 drawBoard();
 
-
+console.log(state)
 
 function drawBoard(){
     for(let row = 0; row < 6; row++){
@@ -30,6 +39,10 @@ function addTile(){
 
 
     board.appendChild(tile);
+}
+
+function registerInputEvents(){
+    
 }
 
 
