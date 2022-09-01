@@ -33,6 +33,12 @@ body {
     height: 50px;
     width: 50px;
     border: 2px solid grey;
+    text-transform: uppercase;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 2rem;
 }
 
 #board {
