@@ -41,18 +41,21 @@ function addTile(board, row, col, letter=''){
 }
 
 function getRowWord(){
-    game.boardState[game.rowIndex].reduce((word, letter) => word + letter)
+    return game.boardState[game.rowIndex].reduce((word, letter) => word + letter)
 }
 
 function handleInput(letter){
     if(letter === 'Enter'){
         if(game.colIndex === numLetters){
-            const word = getRowWord()
+            const word = getRowWord()     
+            if(words.includes(word)){
+                revealWord(word);
+            } else {
+                alert('Not in the word list')
+            }
+                  
 
-            revealWord(word);
-        } else {
-            alert(`The word must be ${numLetters} letters long`)
-        }
+        } 
     }
 
     if(letter === 'Backspace'){
@@ -79,21 +82,21 @@ function registerInputEvents(){
     //add event handlers to keys onClick event
     keys.forEach(key => {
         key.onclick = ({target}) => {
-            const val = target.dataset.key;            
+            const val = target.dataset.key;               
+            //Added name so I can locate the key to add classes
             handleInput(val);
         };
+        key.setAttribute('name', `key-${key.dataset.key}`)   
     })
 
     //handle keyboard input
-    document.body.onkeydown = (e) => {
-        const val = e.key;
-        handleInput(val);
+    document.body.onkeydown = ({key}) => {
+        handleInput(key);
     };
 }
 
 function addLetter(letter){
-    //Add letter to game state board and ui grid
-    
+    //Add letter to game state board and ui grid    
     game.boardState[game.rowIndex][game.colIndex] = letter
     game.colIndex++;
 }
@@ -107,7 +110,46 @@ function deleteLetter(){
 }
 
 function revealWord(word){
+    //compare the current word against the solution
+    for(let i = 0; i < word.length; i++){
 
+        //Get all the tiles in the current row
+        const rowTile = document.getElementById(`tile${game.rowIndex}${i}`);
+
+        //If the letter is correct add the corresponding attribute to tile & keyboard btn
+        addHintClassTile(rowTile, word, i);
+        
+        const key = document.getElementsByName(`key-${word[i]}`)[0];
+        
+        addHintClassKeyBoard(key, word, i);
+    }
+
+    game.rowIndex++;
+    game.colIndex = 0;
+}
+
+function addHintClassTile(obj, word, letterIndex){
+    if(word[letterIndex] === game.solution[letterIndex]){
+        obj.classList.add('correct');
+    } else if(game.solution.includes(word[letterIndex])){
+        obj.classList.add('present');
+    } else {
+        obj.classList.add('absent');
+    }
+}
+
+function addHintClassKeyBoard(obj, word, letterIndex){
+        
+    //If letter is not in word at all
+    if(!game.solution.includes(word[letterIndex])){
+        obj.setAttribute('data-state', 'absent')
+    } else if(word[letterIndex] === game.solution[letterIndex]){
+        obj.setAttribute('data-state', 'correct');
+    } else {
+        if(obj.getAttribute('data-state') !== 'correct'){
+            obj.setAttribute('data-state', 'present');
+        }
+    }
 }
 
 function mapBoardStateToGrid(){
@@ -128,6 +170,7 @@ mapBoardStateToGrid();
 
 registerInputEvents();
 
+console.log(words)
 
 
 

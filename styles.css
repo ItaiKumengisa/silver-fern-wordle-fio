@@ -78,3 +78,28 @@ body {
 :root {
     --num-o-letters: 5;
 }
+
+.correct {
+    background-color: green;
+}
+
+[data-state="correct"] {
+    background-color: green;    
+}
+
+.absent {
+    background-color: darkslategray;
+}
+
+[data-state="absent"] {
+    background-color: silver;    
+}
+
+.present { 
+    background-color: yellow;
+}
+
+[data-state="present"] {
+    background-color: yellow;    
+}
+
