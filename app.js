@@ -56,7 +56,9 @@ function handleInput(letter){
     }
 
     if(letter === 'Backspace'){
-        deleteLetter();
+        if(game.colIndex > 0){
+            deleteLetter();
+        }
     }
 
     if(letter.match(/[a-z]/i) && letter.length === 1){
@@ -64,6 +66,8 @@ function handleInput(letter){
             addLetter(letter)
         }
     }
+
+    mapBoardStateToGrid();
 }
 
 function registerInputEvents(){
@@ -89,19 +93,17 @@ function registerInputEvents(){
 
 function addLetter(letter){
     //Add letter to game state board and ui grid
-    // console.log("Youve reached addLetter: ", letter)
-
-    //update game state
+    
     game.boardState[game.rowIndex][game.colIndex] = letter
-    mapBoardStateToGrid();
     game.colIndex++;
-
-
-    console.log(game)
 }
 
 function deleteLetter(){
+    //Set last letter to empty string
+    game.boardState[game.rowIndex][game.colIndex - 1] = '';
 
+    //set the column index in the game state back one letter
+    game.colIndex--;
 }
 
 function revealWord(word){
