@@ -2,14 +2,17 @@ let numLetters = 5;
 
 const words = ['sauce', 'jeans', 'beans', 'horse', 'month']
 
+const gameStatus = {IN_PROGRESS: 0, PAUSED: 1, WON: 2, LOST: 3};
+
+const numTries = 6;
+
 const game = {
     boardState: Array(6).fill().map(() => Array(numLetters).fill('')),
     rowIndex: 0,
     colIndex: 0,
-    solution: words[Math.floor(Math.random() * words.length)]
+    solution: words[Math.floor(Math.random() * words.length)],
+    gameStatus: gameStatus.IN_PROGRESS
 }
-
-console.log(game)
 
 function drawBoard(){
     const board = document.getElementById('board');
@@ -82,16 +85,19 @@ function registerInputEvents(){
     //add event handlers to keys onClick event
     keys.forEach(key => {
         key.onclick = ({target}) => {
-            const val = target.dataset.key;               
-            //Added name so I can locate the key to add classes
-            handleInput(val);
+            if(game.gameStatus === gameStatus.IN_PROGRESS){
+                const val = target.dataset.key;               
+                handleInput(val);
+            }
         };
         key.setAttribute('name', `key-${key.dataset.key}`)   
     })
 
     //handle keyboard input
     document.body.onkeydown = ({key}) => {
-        handleInput(key);
+        if(game.gameStatus === gameStatus.IN_PROGRESS){
+            handleInput(key);
+        }
     };
 }
 
@@ -124,8 +130,39 @@ function revealWord(word){
         addHintClassKeyBoard(key, word, i);
     }
 
+    if(word === game.solution){
+        showWinMessage()
+        game.gameStatus = gameStatus.WON;
+    } else if(game.rowIndex === numTries - 1){
+        alert('Better Luck Next Time!')
+        game.gameStatus = gameStatus.LOST;
+    }
+    
     game.rowIndex++;
     game.colIndex = 0;
+}
+
+function showWinMessage(){
+    switch(game.rowIndex){
+        case 0:
+            alert('Genius');
+            break;
+        case 1:
+            alert('Magnificent');
+            break;
+        case 2:
+            alert('Impressive');
+            break;
+        case 3:
+            alert('Splendid');
+            break;
+        case 4:
+            alert('Great');
+            break;
+        case 5:
+            alert('Phew');
+            break;
+    }
 }
 
 function addHintClassTile(obj, word, letterIndex){
@@ -139,7 +176,7 @@ function addHintClassTile(obj, word, letterIndex){
 }
 
 function addHintClassKeyBoard(obj, word, letterIndex){
-        
+
     //If letter is not in word at all
     if(!game.solution.includes(word[letterIndex])){
         obj.setAttribute('data-state', 'absent')
@@ -171,6 +208,7 @@ mapBoardStateToGrid();
 registerInputEvents();
 
 console.log(words)
+console.log(gameStatus.IN_PROGRESS)
 
 
 
