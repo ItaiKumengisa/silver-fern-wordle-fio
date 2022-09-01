@@ -1,0 +1,23 @@
+body {
+    background-color: black;
+    color: white;
+    height: 100vh;
+    border: 2px solid white;
+}
+
+#header {
+    margin: 0.5rem;                         /* consider getting rid of this */
+    display: flex;
+    justify-content: space-between;
+    min-height: 40px;
+    border-bottom: 2px solid grey;
+}
+
+#header-start {
+    display: flex;
+}
+
+#header-end {
+    display: flex;
+    /* justify-content: end; */
+}
