@@ -4,14 +4,6 @@ const gameStatus = {IN_PROGRESS: 0, PAUSED: 1, WON: 2, LOST: 3};
 
 const numTries = 6;
 
-const game = {
-    boardState: Array(numTries).fill().map(() => Array(numLetters).fill('')),
-    rowIndex: 0,
-    colIndex: 0,
-    solution: '', //Set during game start
-    gameStatus: gameStatus.IN_PROGRESS
-}
-
 function drawBoard(){
     const board = document.getElementById('board');
 
@@ -49,44 +41,51 @@ function getRowWord(){
 }
 
 function handleInput(letter){
-    if(letter === 'Enter'){
-        if(game.colIndex == numLetters){
-            const word = getRowWord();             
-            fetch(`https://wordsapiv1.p.rapidapi.com/words/${word}`,
-            {   
-                method: 'GET',
-                headers: {
-                    'X-RapidAPI-Key': '3ff3ef9c4fmshccc55004f0a484cp15bd1ejsn315604227e5b',
-                    'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
-                }
-            }).then(res =>  {
-                
-                if(res.status == 200){
-                    revealWord(word);
-                } else {
-                    throw Error();
-                }
-
-            }).catch( () => {
-                alert('Not in the word list')
-            })
-
-        } 
-    }
-
-    if(letter === 'Backspace'){
-        if(game.colIndex > 0){
-            deleteLetter();
+    if(game.hardMode && game.offLimits.includes(letter)){        
+        alert(`In hard mode, letters that are not in the word can only be guessed once`);   
+    } else {
+        if(letter === 'Enter'){
+            if(game.colIndex == numLetters){
+                const word = getRowWord();      
+                console.log(word)       
+                fetch(`https://wordsapiv1.p.rapidapi.com/words/${word}`,
+                {   
+                    method: 'GET',
+                    headers: {
+                        'X-RapidAPI-Key': '3ff3ef9c4fmshccc55004f0a484cp15bd1ejsn315604227e5b',
+                        'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
+                    }
+                }).then(res =>  {
+                    
+                    if(res.status == 200){
+                        revealWord(word);
+                    } else {
+                        throw Error();
+                    }
+    
+                }).catch( (e) => {
+                    console.log(e)
+                    alert('Not in the word list')
+                })
+    
+            } 
         }
-    }
-
-    if(letter.match(/[a-z]/i) && letter.length === 1){
-        if(game.colIndex < numLetters){
-            addLetter(letter)
+    
+        if(letter === 'Backspace'){
+            if(game.colIndex > 0){
+                deleteLetter();
+            }
         }
+    
+        if(letter.match(/[a-z]/i) && letter.length === 1){
+            if(game.colIndex < numLetters){
+                addLetter(letter)
+            }
+        }
+
+        mapBoardStateToGrid();
     }
 
-    mapBoardStateToGrid();
 }
 
 function registerInputEvents(){
@@ -133,17 +132,32 @@ function deleteLetter(){
 
 function revealWord(word){
     //compare the current word against the solution
+    //Get all the tiles in the current row
     for(let i = 0; i < word.length; i++){
 
-        //Get all the tiles in the current row
         const rowTile = document.getElementById(`tile${game.rowIndex}${i}`);
-
-        //If the letter is correct add the corresponding attribute to tile & keyboard btn
-        addHintClassTile(rowTile, word, i);
         
         const key = document.getElementsByName(`key-${word[i]}`)[0];
         
-        addHintClassKeyBoard(key, word, i);
+
+        //Adds classes and attributes to keys and tiles depending on secret word
+        if(word[i] === game.solution[i]){
+            //add correct class to
+            rowTile.classList.add('correct');
+            key.setAttribute('data-state', 'correct');
+        } else if(game.solution.includes(word[i])){
+            rowTile.classList.add('present');
+            if(key.getAttribute('data-state') !== 'correct'){
+                key.setAttribute('data-state', 'present');
+            }
+        } else {
+            rowTile.classList.add('absent');
+            key.setAttribute('data-state', 'absent')
+            
+            game.offLimits.push(word[i]);
+
+        }
+
     }
 
     if(word === game.solution){
@@ -156,6 +170,9 @@ function revealWord(word){
     
     game.rowIndex++;
     game.colIndex = 0;
+
+    disableHardModeControl();
+    
 }
 
 function showWinMessage(){
@@ -178,30 +195,6 @@ function showWinMessage(){
         case 5:
             alert('Phew');
             break;
-    }
-}
-
-function addHintClassTile(obj, word, letterIndex){
-    if(word[letterIndex] === game.solution[letterIndex]){
-        obj.classList.add('correct');
-    } else if(game.solution.includes(word[letterIndex])){
-        obj.classList.add('present');
-    } else {
-        obj.classList.add('absent');
-    }
-}
-
-function addHintClassKeyBoard(obj, word, letterIndex){
-
-    //If letter is not in word at all
-    if(!game.solution.includes(word[letterIndex])){
-        obj.setAttribute('data-state', 'absent')
-    } else if(word[letterIndex] === game.solution[letterIndex]){
-        obj.setAttribute('data-state', 'correct');
-    } else {
-        if(obj.getAttribute('data-state') !== 'correct'){
-            obj.setAttribute('data-state', 'present');
-        }
     }
 }
 
@@ -266,15 +259,55 @@ function getNewWord(){
     });
 }
 
+function hardModeToggle(){
+    //only allow toggl of hard mode if no rows have been submitted
+    if(game.rowIndex == 0){
+        const hardModeCB = document.getElementsByName('hard-mode');
+
+        hardModeCB[0].onclick = () => {
+            game.hardMode = hardModeCB[0].checked;            
+        }
+
+    }
+}
+
+function disableHardModeControl(){
+    const hardModeCB = document.getElementsByName('hard-mode');
+    hardModeCB[0].disabled = true;
+}
+
+function resetHardModeControl(){
+    const hardModeCB = document.getElementsByName('hard-mode');
+    hardModeCB[0].disabled = false;
+    hardModeCB[0].checked = false;
+}
+
 function resetGame(){
-    game.gameStatus = gameStatus.IN_PROGRESS;
+    game = {
+        boardState: Array(numTries).fill().map(() => Array(numLetters).fill('')),
+        rowIndex: 0,
+        colIndex: 0,
+        solution: '', //Set during getNewWord()
+        gameStatus: gameStatus.IN_PROGRESS,
+        hardMode: false,
+        offLimits: []
+    };
+    resetHardModeControl();
     getNewWord();
     resetKeyBoardDataStates();
     boardSetup();
 }
 
 function startGame(){
-    game.gameStatus = gameStatus.IN_PROGRESS;
+    game = {
+        boardState: Array(numTries).fill().map(() => Array(numLetters).fill('')),
+        rowIndex: 0,
+        colIndex: 0,
+        solution: '', //Set during getNewWord()
+        gameStatus: gameStatus.IN_PROGRESS,
+        hardMode: false,
+        offLimits: []
+    };
     getNewWord();
     boardSetup();
     registerInputEvents();
@@ -282,6 +315,7 @@ function startGame(){
 
 startGame();
 
+hardModeToggle();
 
 
 
