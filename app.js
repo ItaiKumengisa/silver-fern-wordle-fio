@@ -212,16 +212,20 @@ function mapBoardStateToGrid(){
 function changeWordLength(){
     
     //change the root variable length option
-    const root = document.querySelector(':root');
     const input = document.getElementsByName('word-length-input');
-
-    root.style.setProperty('--num-of-letters',  input[0].value)
-
-    numLetters = input[0].value;
-
-    //Clear the keyboard
-    resetKeyBoardDataStates();
-    boardSetup();
+    if(input[0].value > 1 && input[0].value < 8){
+        const root = document.querySelector(':root');
+    
+        root.style.setProperty('--num-of-letters',  input[0].value)
+    
+        numLetters = input[0].value;
+    
+        //Clear the keyboard
+        resetKeyBoardDataStates();
+        boardSetup();
+    } else {
+        alert('Number of char must be between 2 and 7')
+    }
 }
 
 function boardSetup(){
@@ -243,9 +247,21 @@ function resetKeyBoardDataStates(){
     })
 }
 
+function getNewWord(){
+    fetch(`https://wordsapiv1.p.rapidapi.com/words/?random=true&lettersMin=${numLetters}&lettersMax=${numLetters}&partOfSpeech=verb`,
+    {   
+        method: 'GET',
+        headers: {
+            'X-RapidAPI-Key': '3ff3ef9c4fmshccc55004f0a484cp15bd1ejsn315604227e5b',
+            'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
+        }
+    }).then(res =>  res.json()).then(({word}) => {
+        game.solution = word;
+        console.log(word)
+    });
+}
 
-
-
+getNewWord();
 boardSetup();
 
 
