@@ -1,7 +1,5 @@
 let numLetters = 5;
 
-const words = ['sauce', 'jeans', 'beans', 'horse', 'month']
-
 const gameStatus = {IN_PROGRESS: 0, PAUSED: 1, WON: 2, LOST: 3};
 
 const numTries = 6;
@@ -10,7 +8,7 @@ const game = {
     boardState: Array(numTries).fill().map(() => Array(numLetters).fill('')),
     rowIndex: 0,
     colIndex: 0,
-    solution: words[Math.floor(Math.random() * words.length)],
+    solution: '', //Set during game start
     gameStatus: gameStatus.IN_PROGRESS
 }
 
@@ -58,7 +56,7 @@ function handleInput(letter){
         if(game.colIndex == numLetters){
             console.log("Entered loop")
             const word = getRowWord();     
-            if(words.includes(word)){
+            if(!ifWordExists(word)){
                 revealWord(word);
             } else {
                 alert('Not in the word list')
@@ -221,6 +219,7 @@ function changeWordLength(){
         numLetters = input[0].value;
     
         //Clear the keyboard
+        getNewWord();
         resetKeyBoardDataStates();
         boardSetup();
     } else {
@@ -257,6 +256,23 @@ function getNewWord(){
         game.solution = word;
         console.log(word)
     });
+}
+
+function ifWordExists(word){
+    fetch(`https://wordsapiv1.p.rapidapi.com/words/${word}`,
+    {   
+        method: 'GET',
+        headers: {
+            'X-RapidAPI-Key': '3ff3ef9c4fmshccc55004f0a484cp15bd1ejsn315604227e5b',
+            'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
+        }
+    }).then(res =>  {
+        if(res.ok){
+            return true;
+        } else{
+            return false;
+        }
+    })
 }
 
 function startGame(){
