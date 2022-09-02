@@ -228,14 +228,12 @@ function changeWordLength(){
     }
 }
 
-function boardSetup(){
+function boardSetup(){    
     game.boardState = Array(numTries).fill().map(() => Array(numLetters).fill(''));
     game.rowIndex = 0;
     game.colIndex = 0;
     drawBoard();
     mapBoardStateToGrid();
-
-    registerInputEvents();
 }
 
 function resetKeyBoardDataStates(){
@@ -261,8 +259,13 @@ function getNewWord(){
     });
 }
 
-getNewWord();
-boardSetup();
+function startGame(){
+    getNewWord();
+    boardSetup();
+    registerInputEvents();
+}
+
+startGame();
 
 
 
