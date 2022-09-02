@@ -50,17 +50,27 @@ function getRowWord(){
 
 function handleInput(letter){
     if(letter === 'Enter'){
-        console.log("colIndex", game.colIndex)
-        console.log("numLetters", numLetters)
-        console.log("equal? : ", game.colIndex == numLetters)
         if(game.colIndex == numLetters){
-            console.log("Entered loop")
-            const word = getRowWord();     
-            if(!ifWordExists(word)){
-                revealWord(word);
-            } else {
+            const word = getRowWord();             
+            fetch(`https://wordsapiv1.p.rapidapi.com/words/${word}`,
+            {   
+                method: 'GET',
+                headers: {
+                    'X-RapidAPI-Key': '3ff3ef9c4fmshccc55004f0a484cp15bd1ejsn315604227e5b',
+                    'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
+                }
+            }).then(res =>  {
+                
+                if(res.status == 200){
+                    revealWord(word);
+                } else {
+                    throw Error();
+                }
+
+            }).catch( () => {
                 alert('Not in the word list')
-            }  
+            })
+
         } 
     }
 
@@ -219,9 +229,7 @@ function changeWordLength(){
         numLetters = input[0].value;
     
         //Clear the keyboard
-        getNewWord();
-        resetKeyBoardDataStates();
-        boardSetup();
+        resetGame();
     } else {
         alert('Number of char must be between 2 and 7')
     }
@@ -258,24 +266,15 @@ function getNewWord(){
     });
 }
 
-function ifWordExists(word){
-    fetch(`https://wordsapiv1.p.rapidapi.com/words/${word}`,
-    {   
-        method: 'GET',
-        headers: {
-            'X-RapidAPI-Key': '3ff3ef9c4fmshccc55004f0a484cp15bd1ejsn315604227e5b',
-            'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com'
-        }
-    }).then(res =>  {
-        if(res.ok){
-            return true;
-        } else{
-            return false;
-        }
-    })
+function resetGame(){
+    game.gameStatus = gameStatus.IN_PROGRESS;
+    getNewWord();
+    resetKeyBoardDataStates();
+    boardSetup();
 }
 
 function startGame(){
+    game.gameStatus = gameStatus.IN_PROGRESS;
     getNewWord();
     boardSetup();
     registerInputEvents();
