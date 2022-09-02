@@ -7,7 +7,7 @@ const gameStatus = {IN_PROGRESS: 0, PAUSED: 1, WON: 2, LOST: 3};
 const numTries = 6;
 
 const game = {
-    boardState: Array(6).fill().map(() => Array(numLetters).fill('')),
+    boardState: Array(numTries).fill().map(() => Array(numLetters).fill('')),
     rowIndex: 0,
     colIndex: 0,
     solution: words[Math.floor(Math.random() * words.length)],
@@ -17,7 +17,10 @@ const game = {
 function drawBoard(){
     const board = document.getElementById('board');
 
-    for(let row = 0; row < 6; row++){
+    //Clear out existing innerHTML
+    board.innerHTML = '';
+
+    for(let row = 0; row < numTries; row++){
         for(let col = 0; col < numLetters; col++){
             //Add square to board grid
             addTile(board, row, col, letter='');
@@ -49,15 +52,17 @@ function getRowWord(){
 
 function handleInput(letter){
     if(letter === 'Enter'){
-        if(game.colIndex === numLetters){
-            const word = getRowWord()     
+        console.log("colIndex", game.colIndex)
+        console.log("numLetters", numLetters)
+        console.log("equal? : ", game.colIndex == numLetters)
+        if(game.colIndex == numLetters){
+            console.log("Entered loop")
+            const word = getRowWord();     
             if(words.includes(word)){
                 revealWord(word);
             } else {
                 alert('Not in the word list')
-            }
-                  
-
+            }  
         } 
     }
 
@@ -90,7 +95,10 @@ function registerInputEvents(){
                 handleInput(val);
             }
         };
-        key.setAttribute('name', `key-${key.dataset.key}`)   
+
+        //Shortcut to set some attributes
+        key.setAttribute('name', `key-${key.dataset.key}`);   
+        key.setAttribute('tabIndex', -1);   
     })
 
     //handle keyboard input
@@ -190,7 +198,7 @@ function addHintClassKeyBoard(obj, word, letterIndex){
 }
 
 function mapBoardStateToGrid(){
-    for(let row = 0; row < 6; row++){
+    for(let row = 0; row < numTries; row++){
         for(let col = 0; col < numLetters; col++){
             //Get grid tile, set the text content
             const tile = document.getElementById(`tile${row}${col}`);
@@ -201,14 +209,44 @@ function mapBoardStateToGrid(){
     }
 }
 
-drawBoard();
+function changeWordLength(){
+    
+    //change the root variable length option
+    const root = document.querySelector(':root');
+    const input = document.getElementsByName('word-length-input');
 
-mapBoardStateToGrid();
+    root.style.setProperty('--num-of-letters',  input[0].value)
 
-registerInputEvents();
+    numLetters = input[0].value;
 
-console.log(words)
-console.log(gameStatus.IN_PROGRESS)
+    //Clear the keyboard
+    resetKeyBoardDataStates();
+    boardSetup();
+}
+
+function boardSetup(){
+    game.boardState = Array(numTries).fill().map(() => Array(numLetters).fill(''));
+    game.rowIndex = 0;
+    game.colIndex = 0;
+    drawBoard();
+    mapBoardStateToGrid();
+
+    registerInputEvents();
+}
+
+function resetKeyBoardDataStates(){
+    //get all of the keys
+    const keys = document.querySelectorAll('.keyboard-btn');
+
+    keys.forEach( (k) => {
+        k.setAttribute('data-state', 'untouched');
+    })
+}
+
+
+
+
+boardSetup();
 
 
 

@@ -2,7 +2,6 @@ body {
     background-color: black;
     color: white;
     height: 100vh;
-    border: 2px solid white;
 }
 
 #header {
@@ -43,7 +42,7 @@ body {
 
 #board {
     display: grid;
-    grid-template-columns: repeat(var(--num-o-letters), auto);
+    grid-template-columns: repeat(var(--num-of-letters), auto);
     grid-template-rows: repeat(6,auto);
     grid-gap: 4px;
 }
@@ -56,6 +55,13 @@ body {
 
 #keyboard {
     margin: 10px
+}
+
+#length-selector {
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px auto;
 }
 
 .keyboard-row {
@@ -76,11 +82,15 @@ body {
 }
 
 :root {
-    --num-o-letters: 5;
+    --num-of-letters: 5;
 }
 
 .correct {
     background-color: green;
+}
+
+[data-state="untouched"]{
+    background-color: grey;
 }
 
 [data-state="correct"] {
