@@ -282,6 +282,16 @@ function resetHardModeControl(){
     hardModeCB[0].checked = false;
 }
 
+function themeToggle(){
+    const themeCB = document.getElementsByName('light-theme');
+
+    console.log(themeCB)
+
+    themeCB[0].onclick = () => {
+        document.body.classList.toggle('light')
+    }
+}
+
 function resetGame(){
     game = {
         boardState: Array(numTries).fill().map(() => Array(numLetters).fill('')),
@@ -309,13 +319,14 @@ function startGame(){
         offLimits: []
     };
     getNewWord();
+    themeToggle();
+    hardModeToggle();
     boardSetup();
     registerInputEvents();
 }
 
 startGame();
 
-hardModeToggle();
 
 
 

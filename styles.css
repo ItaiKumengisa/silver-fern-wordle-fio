@@ -1,6 +1,6 @@
 body {
     background-color: var(--default);
-    color: white;
+    color: var(--color-tone-1);
     height: 100vh;
     font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
 }
@@ -50,7 +50,7 @@ body {
     font-weight: bold;
     font-size: 2.4rem;
     font-family: Arial, Helvetica, sans-serif;
-
+    color: var(--tile-text-color);
 }
 
 #board {
@@ -83,17 +83,18 @@ body {
 .keyboard-row {
     display: flex;
     width: 100%;
-    gap: 2px;
+    margin: 0 auto 8px;    
 }
 
 .keyboard-btn {
     height: 58px;
     flex: 1;
-    border-radius: 6px;
-    background-color: var(--color-tone-2);
+    border-radius: 4px;
+    border: 0px;
     text-transform: uppercase;
     font-weight: bold;
     color: inherit;
+    margin: 0 6px 0 0;
 }
 
 :root {
@@ -110,34 +111,50 @@ body {
     --key-text-color: var(--color-tone-1);
     --color-tone-1: #ffffff;
     --color-tone-2: #818384;
+    --color-tone-3: #000000;
+    --color-tone-4: #d3d6da;
+    --color-tone-5: #787c7e;
+    --color-tone-5: #3a3a3c;
+    --key-text-color:var(--color-tone-1);
+    --evaluated-text-color: var(--color-tone-1);
+    --tile-text-color: var(--color-tone-1);
 }
 
 .correct {
-    background-color: var(--correct);;
+    background-color: var(--correct);
+    border-color: var(--correct);
+    color: var(--evaluated-text-color);  
 }
 
 [data-state="untouched"]{
-    background-color: var(--color-tone-2);
+    background-color: var(--color-tone-2);    
 }
 
 [data-state="correct"] {
-    background-color: var(--correct);;    
+    background-color: var(--correct);
+    color: var(--evaluated-text-color);   
 }
 
 .absent {
     background-color: var(--empty);
+    border-color: var(--empty);
+    color: var(--evaluated-text-color);  
 }
 
 [data-state="absent"] {
-    background-color: var(--empty);    
+    background-color: var(--empty); 
+    color: var(--evaluated-text-color);   
 }
 
 .present { 
-    background-color: var(--wrong);;
+    background-color: var(--wrong);
+    border-color: var(--wrong);
+    color: var(--evaluated-text-color);  
 }
 
 [data-state="present"] {
     background-color: var(--wrong);   
+    color: var(--evaluated-text-color);   
 }
 
 .spacer {
@@ -148,4 +165,13 @@ body {
     background-color: var(--color-tone-7);
     color:inherit;
     border: 0px;
+}
+
+.light {
+    --default: #ffffff;
+    --color-tone-1: #000000;
+    --color-tone-2: #d3d6da;
+    --empty: #787c7e;
+    --tile-text-color: var(--color-tone-1);
+    --evaluated-text-color: #ffffff; 
 }
