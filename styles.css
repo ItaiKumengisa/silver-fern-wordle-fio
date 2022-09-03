@@ -1,8 +1,9 @@
 body {
     background-color: var(--default);
     color: var(--color-tone-1);
-    height: 100vh;
+    height: 95vh;
     font-family: 'Clear Sans', 'Helvetica Neue', Arial, sans-serif;
+    min-width: 600px;
 }
 
 #header {
@@ -29,7 +30,7 @@ body {
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    height: calc(100% - var(--header-height));
+    height: calc(100% - var(--header-height) - var(--game-mode-height));
 
 }
 
@@ -37,6 +38,7 @@ body {
     display: flex;
     justify-content: space-between;
     padding: 0px var(--header-padding-x);
+    height: var(--game-mode-height);
 }
 
 .tile {
@@ -106,6 +108,7 @@ body {
     --header-padding-x: 1rem;
     --header-height: 2.5rem;
     --keyboard-height: 12.5rem;
+    --game-mode-height: 2rem;
     --game-max-width: 31.25rem ;
     --key-bg: var(--color-tone-2);
     --key-text-color: var(--color-tone-1);
@@ -174,4 +177,54 @@ body {
     --empty: #787c7e;
     --tile-text-color: var(--color-tone-1);
     --evaluated-text-color: #ffffff; 
+}
+
+.moving {
+    animation: move 0.5s ease;
+}
+
+.turning {
+    animation: turn 0.5s ease;
+}
+
+@keyframes turn {
+    0% {
+        transform: scaleY(100%);
+    }
+    50% {
+        transform: scaleY(0);
+    }
+    100% {
+        transform: scaleY(100%);
+    }
+}
+
+@keyframes move {
+    0% {
+        transform: translateX(0);
+    }
+    10% {
+        transform: translateX(10px);
+    }
+    20% {
+        transform: translateX(0);
+    }
+    30% {
+        transform: translateX(10px);
+    }
+    40% {
+        transform: translateX(0);
+    }
+    50% {
+        transform: translateX(10px);
+    }
+    60% {
+        transform: translateX(0);
+    }
+    70% {
+        transform: translateX(10px);
+    }
+    100% {
+        transform: translateX(0px);
+    }
 }

@@ -42,7 +42,9 @@ function getRowWord(){
 
 function handleInput(letter){
     if(game.hardMode && game.offLimits.includes(letter)){        
+        moveRow();
         alert(`In hard mode, letters that are not in the word can only be guessed once`);   
+
     } else {
         if(letter === 'Enter'){
             if(game.colIndex == numLetters){
@@ -141,22 +143,30 @@ function revealWord(word){
         
 
         //Adds classes and attributes to keys and tiles depending on secret word
-        if(word[i] === game.solution[i]){
-            //add correct class to
-            rowTile.classList.add('correct');
-            key.setAttribute('data-state', 'correct');
-        } else if(game.solution.includes(word[i])){
-            rowTile.classList.add('present');
-            if(key.getAttribute('data-state') !== 'correct'){
-                key.setAttribute('data-state', 'present');
-            }
-        } else {
-            rowTile.classList.add('absent');
-            key.setAttribute('data-state', 'absent')
-            
-            game.offLimits.push(word[i]);
+        setTimeout(() => {
+            rowTile.classList.add('turning');          
 
-        }
+        }, (i * 500) / 2)
+
+        setTimeout(() => {
+
+            if(word[i] === game.solution[i]){
+                //add correct class to
+                rowTile.classList.add('correct');
+                key.setAttribute('data-state', 'correct');
+            } else if(game.solution.includes(word[i])){
+                rowTile.classList.add('present');
+                if(key.getAttribute('data-state') !== 'correct'){
+                    key.setAttribute('data-state', 'present');
+                }
+            } else {
+                rowTile.classList.add('absent');
+                key.setAttribute('data-state', 'absent')
+                
+                game.offLimits.push(word[i]);    
+            }
+        }, ((i + 1 )* 500) /2 )
+        
 
     }
 
@@ -325,9 +335,29 @@ function startGame(){
     registerInputEvents();
 }
 
+function moveRow(){
+    //get row
+    for(let col = 0; col < numLetters; col++){
+        const tile = document.querySelector(`#tile${game.rowIndex}${col}`);        
+        tile.classList.add('moving')
+    }
+}
+
+// function flipTiles(){
+//     for(let col = 0; col < numLetters; col++){
+//         const tile = document.querySelector(`#tile${game.rowIndex}${col}`);        
+//     }
+// }
+
 startGame();
+// moveRow();
 
 
 
+setTimeout( () => {
+    console.log("3 secs")
+}, 3000)
 
-
+setTimeout( () => {
+    console.log("2 secs")
+}, 2000)
