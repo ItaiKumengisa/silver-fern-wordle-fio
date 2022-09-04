@@ -250,7 +250,7 @@ function mapBoardStateToGrid(){
     }
 }
 
-function changeWordLength(){    
+function changeWordLength(){  
     //change the root variable length option
     if(wordLengthInput[0].value > 1 && wordLengthInput[0].value < 8){
     
