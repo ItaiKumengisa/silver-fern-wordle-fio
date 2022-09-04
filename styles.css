@@ -242,13 +242,14 @@ body {
 }
 
 .message {
-    background-color: white;        
+    background-color: var(--color-tone-1);        
     width: fit-content;
-    color: black;
+    color: var(--color-tone-2);
     padding: 0.5rem;
     border-radius: 4px;
     opacity: 1;
     transition: opacity 500ms ease;
+    margin-bottom: 0.5rem;
 }
 
 .message.hide {

@@ -4,8 +4,32 @@ const gameStatus = {IN_PROGRESS: 0, PAUSED: 1, WON: 2, LOST: 3};
 
 const numTries = 6;
 
-function drawBoard(){
-    const board = document.getElementById('board');
+//Board
+const board = document.getElementById('board');
+
+//Key board
+const keys = document.querySelectorAll('.keyboard-btn');
+
+//Word Length input
+const wordLengthInput = document.getElementsByName('word-length-input');
+
+//root
+const root = document.querySelector(':root');
+
+//hard mode checkbox
+const hardModeCB = document.getElementsByName('hard-mode');
+
+//theme checkbox
+const themeCB = document.getElementsByName('light-theme');
+
+//alert message container
+const container = document.querySelector('#messages')
+
+
+
+
+
+function drawBoard(board){
 
     //Clear out existing innerHTML
     board.innerHTML = '';
@@ -43,7 +67,7 @@ function getRowWord(){
 function handleInput(letter){
     if(game.hardMode && game.offLimits.includes(letter)){        
         moveRow();
-        alert(`In hard mode, letters that are not in the word can only be guessed once`);   
+        showMessage(`In hard mode, letters that are not in the word can only be guessed once`, 5000);   
 
     } else {
         if(letter === 'Enter'){
@@ -67,8 +91,7 @@ function handleInput(letter){
                     
                 }).catch( (e) => {
                     moveRow();
-                    console.log(e)
-                    alert('Not in the word list')
+                    showMessage('Not in the word list', 1000)
                 })
     
             } 
@@ -92,11 +115,7 @@ function handleInput(letter){
 }
 
 function registerInputEvents(){
-    //Add event listeners to keyboard buttons
-
-    //get all keyboard buttons
-    const keys = document.querySelectorAll('.keyboard-btn');
-
+    
     //add event handlers to keys onClick event
     keys.forEach(key => {
         key.onclick = ({target}) => {
@@ -153,16 +172,10 @@ function revealWord(word){
             if(word[i] === game.solution[i]){
                 //add correct class to
                 rowTile.classList.add('correct');
-                // key.setAttribute('data-state', 'correct');
             } else if(game.solution.includes(word[i])){
                 rowTile.classList.add('present');
-                // if(key.getAttribute('data-state') !== 'correct'){
-                //     key.setAttribute('data-state', 'present');
-                // }
             } else {
                 rowTile.classList.add('absent');
-                // key.setAttribute('data-state', 'absent')
-                
                 game.offLimits.push(word[i]);    
             }
         }, ((i + 1 ) * 500) /2 )
@@ -170,7 +183,6 @@ function revealWord(word){
         setTimeout(() => {            
             changekeyboardColors(key, word, i);
         }, (500) * (numLetters - 2));
-        
 
     }
 
@@ -178,7 +190,7 @@ function revealWord(word){
         showWinMessage()
         game.gameStatus = gameStatus.WON;
     } else if(game.rowIndex === numTries - 1){
-        alert('Better Luck Next Time!')
+        showMessage('Better Luck Next Time!', 10000)
         game.gameStatus = gameStatus.LOST;
     }
     
@@ -206,22 +218,22 @@ function changekeyboardColors(key, word, i){
 function showWinMessage(){
     switch(game.rowIndex){
         case 0:
-            alert('Genius');
+            showMessage('Genius', 7000);
             break;
         case 1:
-            alert('Magnificent');
+            showMessage('Magnificent', 7000);
             break;
         case 2:
-            alert('Impressive');
+            showMessage('Impressive', 7000);
             break;
         case 3:
-            alert('Splendid');
+            showMessage('Splendid', 7000);
             break;
         case 4:
-            alert('Great');
+            showMessage('Great', 7000);
             break;
         case 5:
-            alert('Phew');
+            showMessage('Phew',7000);
             break;
     }
 }
@@ -238,21 +250,18 @@ function mapBoardStateToGrid(){
     }
 }
 
-function changeWordLength(){
-    
+function changeWordLength(){    
     //change the root variable length option
-    const input = document.getElementsByName('word-length-input');
-    if(input[0].value > 1 && input[0].value < 8){
-        const root = document.querySelector(':root');
+    if(wordLengthInput[0].value > 1 && wordLengthInput[0].value < 8){
     
-        root.style.setProperty('--num-of-letters',  input[0].value)
+        root.style.setProperty('--num-of-letters',  wordLengthInput[0].value)
     
-        numLetters = input[0].value;
+        numLetters = wordLengthInput[0].value;
     
         //Clear the keyboard
         resetGame();
     } else {
-        alert('Number of char must be between 2 and 7')
+        showMessage('Number of char must be between 2 and 7', 2000)
     }
 }
 
@@ -260,13 +269,12 @@ function boardSetup(){
     game.boardState = Array(numTries).fill().map(() => Array(numLetters).fill(''));
     game.rowIndex = 0;
     game.colIndex = 0;
-    drawBoard();
+    drawBoard(board);
     mapBoardStateToGrid();
 }
 
 function resetKeyBoardDataStates(){
     //get all of the keys
-    const keys = document.querySelectorAll('.keyboard-btn');
 
     keys.forEach( (k) => {
         k.setAttribute('data-state', 'untouched');
@@ -290,7 +298,6 @@ function getNewWord(){
 function hardModeToggle(){
     //only allow toggl of hard mode if no rows have been submitted
     if(game.rowIndex == 0){
-        const hardModeCB = document.getElementsByName('hard-mode');
 
         hardModeCB[0].onclick = () => {
             game.hardMode = hardModeCB[0].checked;            
@@ -300,20 +307,15 @@ function hardModeToggle(){
 }
 
 function disableHardModeControl(){
-    const hardModeCB = document.getElementsByName('hard-mode');
     hardModeCB[0].disabled = true;
 }
 
 function resetHardModeControl(){
-    const hardModeCB = document.getElementsByName('hard-mode');
     hardModeCB[0].disabled = false;
     hardModeCB[0].checked = false;
 }
 
 function themeToggle(){
-    const themeCB = document.getElementsByName('light-theme');
-
-    console.log(themeCB)
 
     themeCB[0].onclick = () => {
         document.body.classList.toggle('light')
@@ -358,11 +360,13 @@ function moveRow(){
     for(let col = 0; col < numLetters; col++){
         const tile = document.querySelector(`#tile${game.rowIndex}${col}`);        
         tile.classList.add('moving')
+        tile.addEventListener('animationend' ,() => {
+            tile.classList.remove('moving')
+        })
     }
 }
 
-function showMessage(msg){
-    const container = document.querySelector('#messages')
+function showMessage(msg, duration){
     const message = document.createElement('div');
     message.textContent = msg;
     message.classList.add('message');
@@ -370,11 +374,8 @@ function showMessage(msg){
     container.prepend(message)
 
     setTimeout(() => {
-        message.classList.add('hide')
-
-        
-       
-    }, 1000)
+        message.classList.add('hide');       
+    }, duration)
 
     message.addEventListener('transitionend', () => {
         message.remove();
@@ -383,6 +384,5 @@ function showMessage(msg){
         message.remove();
     }
 }
-
 
 startGame();
