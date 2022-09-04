@@ -64,8 +64,9 @@ function handleInput(letter){
                     } else {
                         throw Error();
                     }
-    
+                    
                 }).catch( (e) => {
+                    moveRow();
                     console.log(e)
                     alert('Not in the word list')
                 })
@@ -149,23 +150,26 @@ function revealWord(word){
         }, (i * 500) / 2)
 
         setTimeout(() => {
-
             if(word[i] === game.solution[i]){
                 //add correct class to
                 rowTile.classList.add('correct');
-                key.setAttribute('data-state', 'correct');
+                // key.setAttribute('data-state', 'correct');
             } else if(game.solution.includes(word[i])){
                 rowTile.classList.add('present');
-                if(key.getAttribute('data-state') !== 'correct'){
-                    key.setAttribute('data-state', 'present');
-                }
+                // if(key.getAttribute('data-state') !== 'correct'){
+                //     key.setAttribute('data-state', 'present');
+                // }
             } else {
                 rowTile.classList.add('absent');
-                key.setAttribute('data-state', 'absent')
+                // key.setAttribute('data-state', 'absent')
                 
                 game.offLimits.push(word[i]);    
             }
-        }, ((i + 1 )* 500) /2 )
+        }, ((i + 1 ) * 500) /2 )
+
+        setTimeout(() => {            
+            changekeyboardColors(key, word, i);
+        }, (500) * (numLetters - 2));
         
 
     }
@@ -183,6 +187,20 @@ function revealWord(word){
 
     disableHardModeControl();
     
+}
+
+function changekeyboardColors(key, word, i){
+    if(word[i] === game.solution[i]){
+        //add correct class to
+        key.setAttribute('data-state', 'correct');
+    } else if(game.solution.includes(word[i])){
+        if(key.getAttribute('data-state') !== 'correct'){
+            key.setAttribute('data-state', 'present');
+        }
+    } else {
+        key.setAttribute('data-state', 'absent')
+        game.offLimits.push(word[i]);    
+    }
 }
 
 function showWinMessage(){
@@ -343,21 +361,28 @@ function moveRow(){
     }
 }
 
-// function flipTiles(){
-//     for(let col = 0; col < numLetters; col++){
-//         const tile = document.querySelector(`#tile${game.rowIndex}${col}`);        
-//     }
-// }
+function showMessage(msg){
+    const container = document.querySelector('#messages')
+    const message = document.createElement('div');
+    message.textContent = msg;
+    message.classList.add('message');
+
+    container.prepend(message)
+
+    setTimeout(() => {
+        message.classList.add('hide')
+
+        
+       
+    }, 1000)
+
+    message.addEventListener('transitionend', () => {
+        message.remove();
+    });
+    message.ontransitionend = () => {
+        message.remove();
+    }
+}
+
 
 startGame();
-// moveRow();
-
-
-
-setTimeout( () => {
-    console.log("3 secs")
-}, 3000)
-
-setTimeout( () => {
-    console.log("2 secs")
-}, 2000)

@@ -228,3 +228,29 @@ body {
         transform: translateX(0px);
     }
 }
+
+#messages {
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    left: 50%;
+    transform: translate(-50%, 0);
+    top: 15vh;  
+}
+
+.message {
+    background-color: white;        
+    width: fit-content;
+    color: black;
+    padding: 0.5rem;
+    border-radius: 4px;
+    opacity: 1;
+    transition: opacity 500ms ease;
+}
+
+.message.hide {
+    opacity: 0;
+}
