@@ -2,7 +2,7 @@ let numLetters = 5;
 
 const gameStatus = {IN_PROGRESS: 0, PAUSED: 1, WON: 2, LOST: 3};
 
-const numTries = 6;
+const NUM_TRIES = 6;
 
 //Board
 const board = document.getElementById('board');
@@ -13,6 +13,8 @@ const keys = document.querySelectorAll('.keyboard-btn');
 //Word Length input
 const wordLengthInput = document.getElementsByName('word-length-input');
 
+//Word Length Submit Button
+const wordLengthSubmitButton = document.getElementById("submit-length");
 //root
 const root = document.querySelector(':root');
 
@@ -25,16 +27,12 @@ const themeCB = document.getElementsByName('light-theme');
 //alert message container
 const container = document.querySelector('#messages')
 
-
-
-
-
 function drawBoard(board){
 
     //Clear out existing innerHTML
     board.innerHTML = '';
 
-    for(let row = 0; row < numTries; row++){
+    for(let row = 0; row < NUM_TRIES; row++){
         for(let col = 0; col < numLetters; col++){
             //Add square to board grid
             addTile(board, row, col, letter='');
@@ -136,6 +134,7 @@ function registerInputEvents(){
             handleInput(key);
         }
     };
+    
 }
 
 function addLetter(letter){
@@ -189,7 +188,7 @@ function revealWord(word){
     if(word === game.solution){
         showWinMessage()
         game.gameStatus = gameStatus.WON;
-    } else if(game.rowIndex === numTries - 1){
+    } else if(game.rowIndex === NUM_TRIES - 1){
         showMessage('Better Luck Next Time!', 10000)
         game.gameStatus = gameStatus.LOST;
     }
@@ -239,7 +238,7 @@ function showWinMessage(){
 }
 
 function mapBoardStateToGrid(){
-    for(let row = 0; row < numTries; row++){
+    for(let row = 0; row < NUM_TRIES; row++){
         for(let col = 0; col < numLetters; col++){
             //Get grid tile, set the text content
             const tile = document.getElementById(`tile${row}${col}`);
@@ -252,21 +251,26 @@ function mapBoardStateToGrid(){
 
 function changeWordLength(){  
     //change the root variable length option
-    if(wordLengthInput[0].value > 1 && wordLengthInput[0].value < 8){
-    
-        root.style.setProperty('--num-of-letters',  wordLengthInput[0].value)
-    
-        numLetters = wordLengthInput[0].value;
-    
-        //Clear the keyboard
-        resetGame();
+    console.log(game.colIndex)
+    if(game.colIndex === 0){
+        if(wordLengthInput[0].value > 1 && wordLengthInput[0].value < 8){
+        
+            root.style.setProperty('--num-of-letters',  wordLengthInput[0].value)
+        
+            numLetters = wordLengthInput[0].value;
+        
+            //Clear the keyboard
+            resetGame();
+        } else {
+            showMessage('Number of char must be between 2 and 7', 2000)
+        }
     } else {
-        showMessage('Number of char must be between 2 and 7', 2000)
+        showMessage('Can only change the word length at the start ')
     }
 }
 
 function boardSetup(){    
-    game.boardState = Array(numTries).fill().map(() => Array(numLetters).fill(''));
+    game.boardState = Array(NUM_TRIES).fill().map(() => Array(numLetters).fill(''));
     game.rowIndex = 0;
     game.colIndex = 0;
     drawBoard(board);
@@ -324,7 +328,7 @@ function themeToggle(){
 
 function resetGame(){
     game = {
-        boardState: Array(numTries).fill().map(() => Array(numLetters).fill('')),
+        boardState: Array(NUM_TRIES).fill().map(() => Array(numLetters).fill('')),
         rowIndex: 0,
         colIndex: 0,
         solution: '', //Set during getNewWord()
@@ -340,7 +344,7 @@ function resetGame(){
 
 function startGame(){
     game = {
-        boardState: Array(numTries).fill().map(() => Array(numLetters).fill('')),
+        boardState: Array(NUM_TRIES).fill().map(() => Array(numLetters).fill('')),
         rowIndex: 0,
         colIndex: 0,
         solution: '', //Set during getNewWord()
