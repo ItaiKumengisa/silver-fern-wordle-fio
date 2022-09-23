@@ -59,6 +59,7 @@ function addTile(board, row, col, letter=''){
 }
 
 function getRowWord(){
+    //Using the reduce method on the array at the current index to get full word
     return game.boardState[game.rowIndex].reduce((word, letter) => word + letter)
 }
 
@@ -69,6 +70,9 @@ function handleInput(letter){
 
     } else {
         if(letter === 'Enter'){
+            wordLengthSubmitButton.blur();
+            //If the word has proper length
+
             if(game.colIndex == numLetters){
                 const word = getRowWord();      
                 console.log(word)       
@@ -250,21 +254,17 @@ function mapBoardStateToGrid(){
 
 function changeWordLength(){  
     //change the root variable length option
-    console.log(game.colIndex)
-    if(game.colIndex === 0){
-        if(wordLengthInput[0].value > 1 && wordLengthInput[0].value < 8){
-        
-            root.style.setProperty('--num-of-letters',  wordLengthInput[0].value)
-        
-            numLetters = wordLengthInput[0].value;
-        
-            //Clear the keyboard
-            resetGame();
-        } else {
-            showMessage('Number of char must be between 2 and 7', 2000)
-        }
+     
+    if(wordLengthInput[0].value > 1 && wordLengthInput[0].value < 8){
+    
+        root.style.setProperty('--num-of-letters',  wordLengthInput[0].value)
+    
+        numLetters = wordLengthInput[0].value;
+    
+        //Clear the keyboard
+        resetGame();
     } else {
-        showMessage('Can only change the word length at the start ')
+        showMessage('Number of char must be between 2 and 7', 2000)
     }
 }
 

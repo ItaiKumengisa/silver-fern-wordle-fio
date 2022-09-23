@@ -97,6 +97,7 @@ body {
     font-weight: bold;
     color: inherit;
     margin: 0 6px 0 0;
+    cursor: pointer;
 }
 
 :root {
@@ -141,12 +142,12 @@ body {
 .absent {
     background-color: var(--empty);
     border-color: var(--empty);
-    color: var(--evaluated-text-color);  
+    color: var(--evaluated-text-color);
 }
 
 [data-state="absent"] {
     background-color: var(--empty); 
-    color: var(--evaluated-text-color);   
+    color: var(--evaluated-text-color); 
 }
 
 .present { 
@@ -254,4 +255,18 @@ body {
 
 .message.hide {
     opacity: 0;
+}
+
+#submit-length {
+    padding: 0.5rem 1rem;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#word-length-input {
+    padding: 0.5rem 0.5rem;
+    border-radius: 10px;
+    cursor: pointer; 
+    border: none;
+    text-align: right;
 }
