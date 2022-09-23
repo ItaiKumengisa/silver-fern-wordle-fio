@@ -29,7 +29,7 @@ const container = document.querySelector('#messages')
 
 function drawBoard(board){
 
-    //Clear out existing innerHTML
+    //Clear out existing innerHTML if any
     board.innerHTML = '';
 
     for(let row = 0; row < NUM_TRIES; row++){
@@ -118,8 +118,7 @@ function registerInputEvents(){
     keys.forEach(key => {
         key.onclick = ({target}) => {
             if(game.gameStatus === gameStatus.IN_PROGRESS){
-                const val = target.dataset.key;               
-                handleInput(val);
+                handleInput(target.dataset.key);
             }
         };
 
