@@ -87,7 +87,7 @@ function handleInput(letter){
                         throw Error();
                     }
                     
-                }).catch( (e) => {
+                }).catch( () => {
                     moveRow();
                     showMessage('Not in the word list', 1000)
                 })
@@ -269,10 +269,7 @@ function changeWordLength(){
     }
 }
 
-function boardSetup(){    
-    game.boardState = Array(NUM_TRIES).fill().map(() => Array(numLetters).fill(''));
-    game.rowIndex = 0;
-    game.colIndex = 0;
+function boardSetup(){        
     drawBoard(board);
     mapBoardStateToGrid();
 }
@@ -296,10 +293,12 @@ function getNewWord(){
     }).then(res =>  res.json()).then(({word}) => {
         game.solution = word;
         console.log(word)
+    }).catch(() => {
+        showMessage("Was not able to get the new word of the day.")
     });
 }
 
-function hardModeToggle(){
+function initializeHardModeToggle(){
     //only allow toggl of hard mode if no rows have been submitted
     if(game.rowIndex == 0){
 
@@ -319,7 +318,7 @@ function resetHardModeControl(){
     hardModeCB[0].checked = false;
 }
 
-function themeToggle(){
+function initializeThemeToggle(){
 
     themeCB[0].onclick = () => {
         document.body.classList.toggle('light')
@@ -336,28 +335,14 @@ function resetGame(){
         hardMode: false,
         offLimits: []
     };
+    
     resetHardModeControl();
     getNewWord();
     resetKeyBoardDataStates();
     boardSetup();
 }
 
-function startGame(){
-    game = {
-        boardState: Array(NUM_TRIES).fill().map(() => Array(numLetters).fill('')),
-        rowIndex: 0,
-        colIndex: 0,
-        solution: '', //Set during getNewWord()
-        gameStatus: gameStatus.IN_PROGRESS,
-        hardMode: false,
-        offLimits: []
-    };
-    getNewWord();
-    themeToggle();
-    hardModeToggle();
-    boardSetup();
-    registerInputEvents();
-}
+
 
 function moveRow(){
     //get row
@@ -387,6 +372,24 @@ function showMessage(msg, duration){
     message.ontransitionend = () => {
         message.remove();
     }
+}
+
+function startGame(){
+    game = {
+        boardState: Array(NUM_TRIES).fill().map(() => Array(numLetters).fill('')),
+        rowIndex: 0,
+        colIndex: 0,
+        solution: '', //Set during getNewWord()
+        gameStatus: gameStatus.IN_PROGRESS,
+        hardMode: false,
+        offLimits: []
+    };
+
+    getNewWord();
+    initializeThemeToggle();
+    initializeHardModeToggle();
+    boardSetup();
+    registerInputEvents();
 }
 
 startGame();
